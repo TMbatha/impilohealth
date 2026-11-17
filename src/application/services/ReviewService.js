@@ -3,8 +3,9 @@
 const ResultSetDto = require('../dto/ResultSetDto');
 
 class ReviewService {
-  constructor(repo) {
+  constructor(repo, sms = null) {
     this.repo = repo;
+    this.sms = sms;
   }
 
   findPrevious(memberId, currentId) {
@@ -27,7 +28,7 @@ class ReviewService {
   detail(id) {
     const rs = this.repo.find(id);
     if (!rs) return null;
-    return ResultSetDto.fromResultSet(rs, this.findPrevious(rs.memberId, rs.id));
+    return { ...ResultSetDto.fromResultSet(rs, this.findPrevious(rs.memberId, rs.id)), history: rs.history || [] };
   }
 
   release(id, body, clinicianName) {
@@ -50,10 +51,11 @@ class ReviewService {
     rs.release(guidance, doctor);
     this.repo.save(rs);
 
-    return {
-      body: rs.guidance,
-      clinicianName: rs.releasedBy,
-    };
+    const sms = this.sms ? this.sms.resultsReleased(rs) : null;
+
+    const out = { body: rs.guidance, clinicianName: rs.releasedBy };
+    if (sms) out.sms = { toMasked: sms.toMasked, body: sms.body, status: sms.status, sentAt: sms.sentAt };
+    return out;
   }
 }
 

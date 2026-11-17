@@ -1,6 +1,6 @@
 // Caches the app shell only. API responses are NEVER cached: a stale cache could
 // hide a release, or keep showing results after access changes.
-const CACHE = 'fx-mobile-v1';
+const CACHE = 'fx-mobile-v3';
 const SHELL = ['/mobile/', '/mobile/index.html', '/mobile/mobile.js', '/mobile/icon.svg', '/mobile/manifest.webmanifest',
   '/shared/fx.css', '/shared/api.js', '/shared/render.js'];
 

@@ -149,4 +149,22 @@ export function resultSummaryHtml(dto, href) {
   </a>`;
 }
 
+/** An SMS shown as a phone message bubble. */
+export function smsBubbleHtml(sms) {
+  if (!sms) return '';
+  const when = new Date(sms.sentAt).toLocaleTimeString('en-ZA', { hour: '2-digit', minute: '2-digit' });
+  return `<div class="sms">
+    <p class="sms-meta"><span aria-hidden="true">✉</span> SMS to ${esc(sms.toMasked)} · ${when}</p>
+    <p class="sms-body">${esc(sms.body)}</p>
+    <p class="sms-meta">${esc(sms.status)} · ${sms.body.length} chars</p>
+  </div>`;
+}
+
+export function messagesCardHtml(messages) {
+  return `<section class="card"><h3>Messages</h3>
+    ${messages && messages.length ? messages.map(smsBubbleHtml).join('')
+      : '<p class="muted">We will SMS you when new results have been reviewed. Your results themselves are never sent by SMS.</p>'}
+  </section>`;
+}
+
 export const NOT_YET = '<div class="card empty"><p class="empty-icon" aria-hidden="true">⏳</p><h3>Not available yet</h3><p>Your results appear here once your clinician has reviewed them.</p></div>';

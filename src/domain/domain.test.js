@@ -116,3 +116,31 @@ test('ResultSet gate and release', () => {
   assert.ok(rs.releasedAt);
   assert.throws(() => rs.release('again', 'Dr X'), (e) => e.code === 'ALREADY_RELEASED');
 });
+
+test('CRUD rules: draft, withdraw, delete', () => {
+  const draft = new d.ResultSet(rs2);
+  assert.equal(draft.isDeletable(), true);
+  draft.saveDraft('Updated draft');
+  assert.equal(draft.guidance, 'Updated draft');
+  draft.release('Final', 'Dr A. Naidoo');
+  assert.throws(() => draft.saveDraft('x'), (e) => e.code === 'NOT_EDITABLE');
+  assert.throws(() => draft.assertDeletable(), (e) => e.code === 'NOT_DELETABLE');
+  draft.withdraw('Dr A. Naidoo', 'Lab error');
+  assert.equal(draft.isVisibleToMember(), false);
+  assert.equal(draft.isDeletable(), false, 'once released, never deletable even after withdrawal');
+  assert.deepEqual(draft.history.map((h) => h.action), ['draft_saved', 'released', 'withdrawn']);
+
+  const seeded = new d.ResultSet(rs1);
+  assert.equal(seeded.isDeletable(), false, 'seeded released sets carry their release in history');
+  seeded.withdraw('Dr A. Naidoo');
+  assert.equal(seeded.isDeletable(), false);
+  assert.throws(() => new d.ResultSet(rs2).withdraw('Dr A. Naidoo'), (e) => e.code === 'NOT_RELEASED');
+});
+
+test('Member validates phone and supports updates', () => {
+  const m = new d.Member({ id: 'm9', name: 'Test', phone: '+27 82 123 4567' });
+  assert.equal(m.phone, '+27821234567');
+  assert.equal(m.with({ name: 'Renamed' }).name, 'Renamed');
+  assert.throws(() => new d.Member({ id: 'm9', name: 'X', phone: 'abc' }), /Invalid phone/);
+  assert.throws(() => new d.Member({ id: 'm9', name: '' }), /requires a name/);
+});

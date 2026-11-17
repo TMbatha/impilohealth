@@ -76,4 +76,32 @@ button, textarea, input { font: inherit; }
 .btn-ghost { background: transparent; color: var(--brand); border: 1px solid var(--line); }
 .btn:disabled { opacity: .6; cursor: progress; }
 .error { color: var(--bad); font-weight: 600; }
+.sms { background: var(--brand-soft); border-radius: 16px 16px 16px 4px; padding: 10px 14px; margin: 10px 0; max-width: 460px; }
+.sms-body { margin: 4px 0; }
+.sms-meta { margin: 0; font-size: .75rem; color: var(--muted); font-weight: 600; }
+.sms-toast { position: fixed; top: calc(env(safe-area-inset-top) + 10px); left: 50%; transform: translate(-50%, -150%); width: min(480px, calc(100% - 24px));
+  background: var(--surface); color: var(--text); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  z-index: 50; transition: transform .35s ease; cursor: pointer; }
+.sms-toast.show { transform: translate(-50%, 0); }
+.sms-toast strong { display: block; font-size: .85rem; }
+/* ---- Plainer, product-style overrides ---- */
+:root { --radius: 6px; font-size: 15px; }
+.card { padding: 16px 18px; margin-bottom: 12px; box-shadow: none; }
+.eyebrow { text-transform: none; letter-spacing: 0; font-size: .85rem; font-weight: 500; }
+h2 { font-size: 1.35rem; font-weight: 650; letter-spacing: -.01em; }
+h3 { font-size: 1rem; font-weight: 650; }
+.badge { border-radius: 3px; padding: 1px 7px; font-size: .78rem; font-weight: 600; background: transparent; border: 1px solid currentColor; }
+.badge > [aria-hidden="true"], .empty-icon, .sms-meta > [aria-hidden="true"], .not-calculable > [aria-hidden="true"] { display: none; }
+.analyte-value { font-size: 1.35rem; font-weight: 650; }
+.bandbar { height: 8px; border-radius: 2px; }
+.bandbar .seg { opacity: .35; }
+.bandbar .marker { width: 3px; margin-left: -1.5px; top: -4px; bottom: -4px; border-radius: 0; }
+.stat { border-radius: 4px; background: transparent; border: 1px solid var(--line); }
+.stat-value { font-size: 1.15rem; font-weight: 650; }
+.btn { border-radius: 5px; padding: 8px 14px; font-weight: 600; }
+.guidance { border-left-width: 3px; }
+.sms { border-radius: 10px 10px 10px 2px; }
+.foot-note { font-style: normal; font-size: .82rem; }
+.not-calculable { border-radius: 4px; }
+.empty { padding: 28px 18px; }
 :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
