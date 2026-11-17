@@ -1,5 +1,5 @@
 import { api } from '/shared/api.js';
-import { esc, fmtDate, resultDetailHtml, resultSummaryHtml, statusBadge, NOT_YET } from '/shared/render.js';
+import { esc, fmtDate, resultDetailHtml, resultSummaryHtml, statusBadge, messagesCardHtml, NOT_YET } from '/shared/render.js';
 
 const app = document.getElementById('app');
 const title = document.getElementById('title');
@@ -11,13 +11,14 @@ const link = (r) => `#/results/${encodeURIComponent(r.id)}`;
 
 async function home() {
   title.textContent = 'FX Health';
-  const results = ((await api.memberResults()) || []).sort(byNewest);
+  const [res, messages] = await Promise.all([api.memberResults(), api.memberMessages().catch(() => [])]);
+  const results = (res || []).sort(byNewest);
   const latest = results[0];
   const name = (latest?.memberName || '').replace(/\s*\(demo\)/, '').split(' ')[0];
   app.innerHTML = `
     <section class="card">
-      <p class="eyebrow">Welcome back</p>
-      <h2>${name ? `Hi, ${esc(name)}` : 'Hello'}</h2>
+      
+      <h2>${name ? esc(name) : "Your results"}</h2>
       <p class="muted">Results appear once your clinician has reviewed them.</p>
     </section>
     ${latest ? `
@@ -28,8 +29,35 @@ async function home() {
       </section>
       ${latest.guidance ? `<section class="card guidance"><h3>From ${esc(latest.releasedBy)}</h3><p>${esc(latest.guidance)}</p></section>` : ''}`
     : NOT_YET}
+    ${messagesCardHtml(messages)}
     ${FOOT}`;
 }
+
+// Incoming SMS: poll the member's messages and drop a notification banner when a new one lands.
+const toast = document.createElement('div');
+toast.className = 'sms-toast';
+toast.setAttribute('role', 'status');
+toast.setAttribute('aria-live', 'polite');
+document.body.appendChild(toast);
+let seenSms = null;
+async function checkSms() {
+  try {
+    const msgs = (await api.memberMessages()) || [];
+    const ids = msgs.map((m) => m.id);
+    if (seenSms && ids.some((id) => !seenSms.includes(id))) {
+      const m = msgs[0];
+      toast.innerHTML = `<strong><span aria-hidden="true">✉</span> New SMS · FX Health</strong>${esc(m.body)}`;
+      toast.onclick = () => { toast.classList.remove('show'); location.hash = `#/results/${encodeURIComponent(m.resultSetId)}`; };
+      toast.classList.add('show');
+      if (navigator.vibrate) navigator.vibrate(200);
+      setTimeout(() => toast.classList.remove('show'), 8000);
+      route();
+    }
+    seenSms = ids;
+  } catch { /* offline: try again next tick */ }
+}
+checkSms();
+setInterval(checkSms, 4000);
 
 async function list() {
   title.textContent = 'My results';

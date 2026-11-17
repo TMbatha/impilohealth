@@ -33,6 +33,10 @@ class InMemoryResultSetRepository {
     return this;
   }
 
+  delete(id) {
+    return this.store.delete(id);
+  }
+
   clear() {
     this.store.clear();
     return this;

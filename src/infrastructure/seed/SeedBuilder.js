@@ -3,8 +3,8 @@
 const { ResultSet, Member, RiskCategory } = require('../../domain');
 
 class SeedBuilder {
-  constructor(memberId = 'm1', memberName = 'Lerato M. (demo)', riskCategory = RiskCategory.MODERATE) {
-    this.member = new Member({ id: memberId, name: memberName, riskCategory });
+  constructor(memberId = 'm1', memberName = 'Lerato M. (demo)', riskCategory = RiskCategory.MODERATE, phone = '+27821234821') {
+    this.member = new Member({ id: memberId, name: memberName, riskCategory, phone });
     this.results = [];
   }
 
@@ -66,5 +66,7 @@ class SeedBuilder {
     return builder.build();
   }
 }
+
+SeedBuilder.demoMembers = () => [new SeedBuilder().member];
 
 module.exports = { SeedBuilder, createDemoSeed: SeedBuilder.createDemoSeed };

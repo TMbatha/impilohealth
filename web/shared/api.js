@@ -18,7 +18,19 @@ export const api = {
   staffDetail: (id) => request('GET', `/api/result-sets/${encodeURIComponent(id)}`),
   release: (id, body, clinicianName) =>
     request('POST', `/api/result-sets/${encodeURIComponent(id)}/release`, { body, clinicianName }),
+  // Clinician CRUD
+  allResultSets: () => request('GET', '/api/result-sets'),
+  rawResultSet: (id) => request('GET', `/api/result-sets/${encodeURIComponent(id)}/raw`),
+  createResultSet: (data) => request('POST', '/api/result-sets', data),
+  updateResultSet: (id, data) => request('PUT', `/api/result-sets/${encodeURIComponent(id)}`, data),
+  saveDraft: (id, body) => request('PATCH', `/api/result-sets/${encodeURIComponent(id)}/guidance`, { body }),
+  withdraw: (id, reason, clinicianName) => request('POST', `/api/result-sets/${encodeURIComponent(id)}/withdraw`, { reason, clinicianName }),
+  deleteResultSet: (id) => request('DELETE', `/api/result-sets/${encodeURIComponent(id)}`),
+  members: () => request('GET', '/api/members'),
+  createMember: (data) => request('POST', '/api/members', data),
+  updateMember: (id, data) => request('PUT', `/api/members/${encodeURIComponent(id)}`, data),
   // Member: released only; detail returns null when not released (404)
   memberResults: () => request('GET', '/api/member/results'),
+  memberMessages: () => request('GET', '/api/member/messages'),
   memberResult: (id) => request('GET', `/api/member/results/${encodeURIComponent(id)}`),
 };
