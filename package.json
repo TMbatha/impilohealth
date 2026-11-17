@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node src/infrastructure/http/server.js",
     "dev": "node src/infrastructure/http/server.js",
-    "test": "node --test \"src/**/*.test.js\""
+    "test": "node --test \"src/**/*.test.js\"",
+    "build:static": "node scripts/build-static.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

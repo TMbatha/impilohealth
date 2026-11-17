@@ -1,5 +1,5 @@
-import { api } from '/shared/api.js';
-import { esc, fmtDate, resultDetailHtml, resultSummaryHtml, statusBadge, smsBubbleHtml, messagesCardHtml, NOT_YET } from '/shared/render.js';
+import { api, STATIC_MODE } from './shared/api.js';
+import { esc, fmtDate, resultDetailHtml, resultSummaryHtml, statusBadge, smsBubbleHtml, messagesCardHtml, NOT_YET } from './shared/render.js';
 
 const CLINICIAN = 'Dr A. Naidoo';
 const app = document.getElementById('app');
@@ -327,3 +327,17 @@ async function route() {
 
 window.addEventListener('hashchange', route);
 route();
+
+// GitHub Pages: no server, so data lives in this browser. Offer a reset for repeat demos.
+if (STATIC_MODE) {
+  const bar = document.createElement('footer');
+  bar.className = 'demo-bar';
+  bar.innerHTML = 'Demo mode: data is saved in this browser only. <button type="button">Reset demo data</button>';
+  bar.querySelector('button').addEventListener('click', async () => {
+    if (!confirm('Reset all demo data back to the starting state?')) return;
+    await api.resetDemo();
+    location.hash = '#/';
+    route();
+  });
+  document.body.appendChild(bar);
+}

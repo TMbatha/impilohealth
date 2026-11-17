@@ -1,5 +1,5 @@
-import { api } from '/shared/api.js';
-import { esc, fmtDate, resultDetailHtml, resultSummaryHtml, statusBadge, messagesCardHtml, NOT_YET } from '/shared/render.js';
+import { api } from '../shared/api.js';
+import { esc, fmtDate, resultDetailHtml, resultSummaryHtml, statusBadge, messagesCardHtml, NOT_YET } from '../shared/render.js';
 
 const app = document.getElementById('app');
 const title = document.getElementById('title');
@@ -107,7 +107,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 route();
 
 // Installable PWA
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/mobile/sw.js', { scope: '/mobile/' }).catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
 let deferred;
 const installBtn = document.getElementById('install');
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; installBtn.style.display = 'inline-flex'; });
