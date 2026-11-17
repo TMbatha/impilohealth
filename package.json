@@ -1,0 +1,14 @@
+{
+  "name": "fx-health-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node src/infrastructure/http/server.js",
+    "dev": "node src/infrastructure/http/server.js",
+    "test": "node --test \"src/**/*.test.js\""
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
