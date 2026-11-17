@@ -1,0 +1,60 @@
+{
+  "version": "sa-2026-11",
+  "riskCategory": "MODERATE",
+  "analytes": {
+    "HBA1C": { "unit": "%", "direction": "lower", "tolerance": 0.2, "pathway": "Metabolic",
+      "bands": [
+        { "code": "HBA1C_NORMAL",         "min": null, "max": 5.7,  "label": "Within range" },
+        { "code": "HBA1C_INTERMEDIATE",   "min": 5.7,  "max": 6.5,  "label": "Raised, above the usual range" },
+        { "code": "HBA1C_DIABETES_RANGE", "min": 6.5,  "max": null, "label": "Substantially raised, needs a clinical discussion" }
+      ] },
+    "FPG": { "unit": "mmol/L", "direction": "lower", "tolerance": 0.3, "pathway": "Metabolic",
+      "bands": [
+        { "code": "FPG_NORMAL",           "min": null, "max": 6.1,  "label": "Within range" },
+        { "code": "FPG_IFG",              "min": 6.1,  "max": 7.0,  "label": "Raised, above the usual range" },
+        { "code": "FPG_DIABETES_RANGE",   "min": 7.0,  "max": null, "label": "Substantially raised, needs a clinical discussion" }
+      ] },
+    "TC": { "unit": "mmol/L", "direction": "lower", "tolerance": 0.2, "pathway": "Cardiovascular",
+      "bands": [
+        { "code": "TC_AT_TARGET",         "min": null, "max": 4.5,  "label": "At target" },
+        { "code": "TC_ABOVE_TARGET",      "min": 4.5,  "max": null, "label": "Above target" }
+      ],
+      "flags": [ { "code": "TC_UNUSUALLY_LOW", "below": 2.5 }, { "code": "TC_UNUSUALLY_HIGH", "above": 15 } ] },
+    "LDL": { "unit": "mmol/L", "direction": "lower", "tolerance": 0.2, "pathway": "Cardiovascular",
+      "bands": [
+        { "code": "LDL_AT_TARGET",        "min": null, "max": 3.0,  "label": "At target" },
+        { "code": "LDL_ABOVE_TARGET",     "min": 3.0,  "max": null, "label": "Above target" }
+      ] },
+    "HDL": { "unit": "mmol/L", "direction": "higher", "tolerance": 0.1, "pathway": "Cardiovascular",
+      "bands": [
+        { "code": "HDL_VERY_LOW",         "min": null, "max": 0.90, "label": "Below the usual range" },
+        { "code": "HDL_LOW",              "min": 0.90, "max": 1.20, "label": "Low" },
+        { "code": "HDL_BORDERLINE",       "min": 1.20, "max": 1.30, "label": "Borderline" },
+        { "code": "HDL_ADEQUATE",         "min": 1.30, "max": 1.50, "label": "Adequate" },
+        { "code": "HDL_FAVOURABLE",       "min": 1.50, "max": null, "label": "Favourable" }
+      ],
+      "flags": [ { "code": "HDL_UNUSUALLY_LOW", "below": 0.7 }, { "code": "HDL_UNUSUALLY_HIGH", "above": 2.5 } ] },
+    "TG": { "unit": "mmol/L", "direction": "lower", "tolerance": 0.3, "pathway": "Cardiovascular",
+      "bands": [
+        { "code": "TG_NORMAL",            "min": null, "max": 1.7,  "label": "Within range" },
+        { "code": "TG_RAISED",            "min": 1.7,  "max": 10.0, "label": "Raised" },
+        { "code": "TG_CRITICAL",          "min": 10.0, "max": null, "label": "Substantially raised, urgent" }
+      ] }
+  },
+  "bmi": [
+    { "code": "BMI_UNDER",      "min": null, "max": 18.5 },
+    { "code": "BMI_NORMAL",     "min": 18.5, "max": 25.0 },
+    { "code": "BMI_OVERWEIGHT", "min": 25.0, "max": 30.0 },
+    { "code": "BMI_OBESE",      "min": 30.0, "max": null }
+  ],
+  "bloodPressure": [
+    { "code": "BP_NORMAL",      "sysMax": 120, "diaMax": 80 },
+    { "code": "BP_OPTIMAL",     "sysMax": 130, "diaMax": 85 },
+    { "code": "BP_HIGH_NORMAL", "sysMax": 140, "diaMax": 90 },
+    { "code": "BP_GRADE_1",     "sysMax": 160, "diaMax": 100 },
+    { "code": "BP_GRADE_2",     "sysMax": 180, "diaMax": 110 },
+    { "code": "BP_GRADE_3",     "sysMax": null, "diaMax": null }
+  ],
+  "critical": { "TG": { "above": 10 }, "FPG": { "atOrAbove": 11.1 }, "HBA1C": { "atOrAbove": 10.0 },
+                "BP": { "sysAtOrAbove": 180, "diaAtOrAbove": 110 } }
+}
