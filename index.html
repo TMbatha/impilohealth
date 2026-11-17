@@ -145,9 +145,48 @@
     }
 
     .send-button:hover { background: #096b58; transform: translateY(-1px); }
+    .send-button:disabled {
+      background: #8ca49c;
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: .7;
+      transform: none;
+    }
+
     #form-message { margin: 12px 0 0; text-align: center; }
     .success { color: #0E7C66; }
     .error { color: #C62828; }
+    .medicine-safety {
+      margin-top: 11px;
+      border: 1px solid;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: .82rem;
+      line-height: 1.4;
+    }
+
+    .medicine-safety.alert { border-color: #e8aaa7; background: #fff0ef; color: #A51F1F; }
+    .medicine-safety.caution { border-color: #e6b849; background: #fff7df; color: #75530b; }
+    .medicine-safety.safe { border-color: #b8dcd2; background: #edf7f4; color: #0E7C66; }
+    .safety-heading { margin: 0 0 6px; font-size: .72rem; font-weight: 750; }
+    .safety-message { margin: 4px 0 0; }
+    .safety-override {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 10px 0 0;
+      font-size: .78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .safety-override input {
+      flex: 0 0 17px;
+      width: 17px;
+      height: 17px;
+      margin: 1px 0 0;
+      accent-color: #0E7C66;
+    }
 
     .phone-column { width: 100%; max-width: 450px; margin: 0 auto; }
     .phone-shell {
@@ -205,7 +244,9 @@
 
     .noticed-copy.fading { opacity: 0; }
     .noticed-meta { margin: 8px 0 0; color: #687873; font-size: .73rem; }
-    .noticed-card.entering { animation: noticedEnter .45s ease-out both; }
+    .noticed-card.entering, .forecast-card.entering, .next-steps-card.entering {
+      animation: noticedEnter .45s ease-out both;
+    }
     .analysing-dot {
       display: inline-block;
       width: 7px;
@@ -278,6 +319,47 @@
       line-height: 1.4;
     }
 
+    .next-steps-list { display: grid; gap: 10px; }
+    .next-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 0;
+      color: #3f504a;
+      font-size: .88rem;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .next-step input {
+      flex: 0 0 19px;
+      width: 19px;
+      height: 19px;
+      margin: 1px 0 0;
+      accent-color: #0E7C66;
+    }
+
+    .ready-badge {
+      display: inline-block;
+      margin-top: 14px;
+      border-radius: 999px;
+      padding: 5px 11px;
+      background: #e4f4eb;
+      color: #0E7C66;
+      font-size: .78rem;
+      font-weight: 750;
+    }
+
+    .forecast-card { transition: opacity .25s ease, transform .25s ease; }
+    .forecast-card.stable { border-color: #bfdfd5; background: #e8f4f1; }
+    .forecast-card.caution { border-color: #e6b849; background: #fff7df; }
+    .forecast-card.alert { border-color: #f0c8c5; background: #fff0ef; }
+    .forecast-label { margin: 0 0 4px; color: #53625d; font-size: .76rem; font-weight: 750; }
+    .forecast-copy { margin: 0; font-size: .91rem; font-weight: 650; }
+    .forecast-card.stable .forecast-copy { color: #0E7C66; }
+    .forecast-card.caution .forecast-copy { color: #75530b; }
+    .forecast-card.alert .forecast-copy { color: #B71C1C; }
+
     .chart-legend { margin: -4px 0 8px; color: #687873; font-size: .76rem; }
     .chart-scroll { overflow-x: auto; }
     .chart {
@@ -337,7 +419,10 @@
     }
 
     .bar.alert { background: #C62828; }
-    .bar-date { padding-top: 5px; color: #53625d; font-size: .67rem; white-space: nowrap; }
+    .bar.forecast-stable { border: 2px dashed #0E7C66; background: #0E7C66; opacity: .4; }
+    .bar.forecast-caution { border: 2px dashed #b17a00; background: #e6b849; opacity: .55; }
+    .bar.forecast-alert { border: 2px dashed #C62828; background: #C62828; opacity: .45; }
+    .bar-date { padding-top: 5px; color: #53625d; font-size: .67rem; line-height: 1.2; text-align: center; white-space: nowrap; }
     .timeline { position: relative; padding-left: 22px; }
     .timeline::before {
       position: absolute;
@@ -370,20 +455,69 @@
     .bp-pill.alert { background: #ffebeb; color: #B71C1C; }
     .tag { border-radius: 999px; padding: 2px 8px; background: #edf1ef; color: #53625d; font-size: .7rem; }
 
-    .sms-bubble {
-      margin: 12px 0 0;
-      padding: 13px;
-      border: 1px solid #d8e6e0;
-      border-radius: 15px 15px 3px 15px;
-      background: #eaf5f0;
-      color: #23332f;
-      font-size: .82rem;
+    .feature-phone {
+      width: min(220px, 100%);
+      margin: 18px auto 10px;
+      padding: 11px 12px 14px;
+      border: 2px solid #56605d;
+      border-radius: 30px;
+      background: linear-gradient(145deg, #454e4b, #252c2a);
+      box-shadow: 0 8px 18px #18352d25, inset 0 1px 2px #ffffff30;
+    }
+
+    .feature-earpiece { width: 42px; height: 5px; margin: 0 auto 9px; border-radius: 5px; background: #1c2220; }
+    .feature-screen {
+      min-height: 120px;
+      padding: 9px;
+      border: 3px solid #1e2822;
+      border-radius: 7px;
+      background: #b6c99b;
+      color: #1d3220;
+      box-shadow: inset 0 0 12px #273c2433;
+      font-family: "Courier New", monospace;
+    }
+
+    .feature-message-header {
+      min-height: 29px;
+      margin: 0 0 6px;
+      border-bottom: 1px solid #6f845b;
+      padding-bottom: 5px;
+      font-size: .63rem;
+      font-weight: 700;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .feature-message-body {
+      margin: 0;
+      font-size: .69rem;
+      line-height: 1.35;
       overflow-wrap: anywhere;
       white-space: pre-wrap;
     }
 
-    .sms-text { margin: 0; }
-    .sms-count { display: block; margin-top: 8px; color: #687873; font-size: .7rem; text-align: right; }
+    .feature-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin: 11px 6px 0;
+    }
+
+    .feature-key {
+      min-height: 24px;
+      border: 1px solid #1c2220;
+      border-radius: 6px;
+      background: linear-gradient(#68716e, #454d4a);
+      color: #f0f3f1;
+      font-family: "Courier New", monospace;
+      font-size: .63rem;
+      line-height: 1.1;
+      text-align: center;
+      box-shadow: 0 2px 2px #1118;
+    }
+
+    .sms-caption { margin: 10px 0 0; color: #687873; font-size: .76rem; text-align: center; }
+    .sms-count { display: block; margin-top: 4px; font-size: .73rem; font-weight: 700; }
     footer { padding: 4px 8px 12px; font-size: .72rem; text-align: center; }
     .toast {
       position: fixed;
@@ -467,6 +601,7 @@
           <p class="form-intro">Add a visit to Sipho’s shared health record.</p>
 
           <div id="clinic-patient-banner" class="patient-banner"></div>
+          <div id="suggested-next-steps"></div>
 
           <form id="clinic-form">
             <label for="clinic">Clinic</label>
@@ -488,6 +623,7 @@
 
             <label for="medicine">Medicine</label>
             <input id="medicine" name="medicine" required>
+            <div id="medicine-safety" hidden></div>
 
             <label for="dose">Dose</label>
             <input id="dose" name="dose" required>
@@ -529,10 +665,21 @@
     const clinicForm = document.getElementById("clinic-form");
     const formMessage = document.getElementById("form-message");
     const arrivalToast = document.getElementById("arrival-toast");
+    const medicineFamilies = {
+      penicillins: ["penicillin", "amoxicillin", "ampicillin", "augmentin", "co-amoxiclav", "flucloxacillin", "cloxacillin"],
+      cephalosporins: ["cefalexin", "ceftriaxone", "cefuroxime"],
+      "calcium-channel blockers": ["amlodipine", "nifedipine", "felodipine"],
+      "ACE inhibitors": ["enalapril", "lisinopril", "perindopril"],
+      thiazides: ["hydrochlorothiazide", "indapamide"]
+    };
     let knownVisitCount = 0;
+    let knownVisitsSignature = "";
     let toastTimer;
     let heroTimer;
     let heroFadeTimer;
+    let smsTimer;
+    let medicineSafetyBlocked = false;
+    let medicineOverrideChecked = false;
 
     function todayString() {
       const now = new Date();
@@ -568,6 +715,27 @@
         ? patient.allergies.join(", ")
         : patient.allergies;
       return allergies || "None listed";
+    }
+
+    function normalizeMedicine(value) {
+      return String(value ?? "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    }
+
+    function matchMedicine(value, medicines) {
+      const query = normalizeMedicine(value);
+      if (query.length < 3) return null;
+      return medicines.find(medicine => {
+        const candidate = normalizeMedicine(medicine);
+        return query.includes(candidate) || candidate.includes(query);
+      }) || null;
+    }
+
+    function medicineFamily(value) {
+      for (const [family, medicines] of Object.entries(medicineFamilies)) {
+        const medicine = matchMedicine(value, medicines);
+        if (medicine) return { family, medicine };
+      }
+      return null;
     }
 
     function isAlert(visit) {
@@ -608,6 +776,84 @@
       return "Your readings look stable.";
     }
 
+    function forecastSystolic(visits) {
+      if (visits.length < 3) return null;
+      const points = visits.map(visit => ({
+        day: Date.parse(`${String(visit.date).slice(0, 10)}T00:00:00Z`) / 86400000,
+        systolic: Number(visit.systolic),
+        date: String(visit.date).slice(0, 10)
+      })).filter(point => Number.isFinite(point.day) && Number.isFinite(point.systolic));
+      if (points.length < 3) return null;
+
+      const firstDay = points[0].day;
+      const latest = points[points.length - 1];
+      const xs = points.map(point => point.day - firstDay);
+      const meanX = xs.reduce((sum, value) => sum + value, 0) / xs.length;
+      const meanY = points.reduce((sum, point) => sum + point.systolic, 0) / points.length;
+      const variance = xs.reduce((sum, value) => sum + (value - meanX) ** 2, 0);
+      const covariance = points.reduce(
+        (sum, point, index) => sum + (xs[index] - meanX) * (point.systolic - meanY),
+        0
+      );
+      const slope = variance ? covariance / variance : 0;
+      const projected = Math.round(meanY + slope * (xs[xs.length - 1] + 30 - meanX));
+      const latestDate = new Date(`${latest.date}T00:00:00Z`);
+      latestDate.setUTCDate(latestDate.getUTCDate() + 30);
+      return {
+        value: projected,
+        date: latestDate.toISOString().slice(0, 10),
+        tone: projected >= 160 ? "alert" : projected >= 140 ? "caution" : "stable"
+      };
+    }
+
+    function updateSuggestedNextSteps(patient, visits, insights, animate) {
+      const latest = [...visits].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
+      const clinics = new Set(visits.map(visit => visit.clinic).filter(Boolean));
+      const alerts = insights.filter(item => item.level === "alert" || item.type === "alert");
+      const doseAlert = alerts.find(item => /dose changed/i.test(item.text || ""));
+      const steps = [];
+
+      if (latest && isAlert(latest)) steps.push("Recheck BP in 2 weeks");
+      if (doseAlert) {
+        const match = doseAlert.text.match(/dose changed to .+? at (.+?) \((\d{4}-\d{2}-\d{2})\)/i);
+        if (match) {
+          steps.push(`Review the dose change made at ${match[1]} on ${friendlyDate(match[2])}`);
+        }
+      }
+      if (clinics.size >= 2) {
+        steps.push(`Confirm medicines with the patient: seen at ${clinics.size} clinics`);
+      }
+
+      const allergies = Array.isArray(patient.allergies)
+        ? patient.allergies
+        : String(patient.allergies || "").split(",").map(value => value.trim()).filter(Boolean);
+      const penicillin = allergies.find(allergy => /penicillin/i.test(allergy));
+      steps.push(penicillin
+        ? `Check ${penicillin.toLowerCase()} allergy before prescribing`
+        : allergies.length
+          ? `Check listed allergies before prescribing: ${allergies.join(", ")}`
+          : "Confirm allergies before prescribing");
+
+      document.getElementById("suggested-next-steps").innerHTML = `
+        <section class="card next-steps-card${animate ? " entering" : ""}">
+          <h2>Suggested next steps</h2>
+          <div class="next-steps-list">
+            ${steps.map(step => `<label class="next-step">
+              <input type="checkbox" aria-label="${escapeHtml(step)}">
+              <span>${escapeHtml(step)}</span>
+            </label>`).join("")}
+          </div>
+          <span class="ready-badge" hidden>Ready to treat ✓</span>
+        </section>
+      `;
+      const card = document.querySelector(".next-steps-card");
+      const checkboxes = [...card.querySelectorAll('input[type="checkbox"]')];
+      const badge = card.querySelector(".ready-badge");
+      card.addEventListener("change", () => {
+        badge.hidden = !checkboxes.length || !checkboxes.every(checkbox => checkbox.checked);
+      });
+    }
+
     function updateClinicWarning() {
       const systolic = Number(document.getElementById("systolic").value);
       const diastolic = Number(document.getElementById("diastolic").value);
@@ -630,6 +876,74 @@
         ? `⚠ Pattern across ${clinicCount} clinics: BP rising since the last dose change. Review before prescribing.`
         : `⚠ High BP across ${clinicCount} clinics. Review before prescribing.`;
       warning.hidden = false;
+    }
+
+    function updateMedicineSafety() {
+      const medicineInput = document.getElementById("medicine");
+      const panel = document.getElementById("medicine-safety");
+      const sendButton = clinicForm.querySelector(".send-button");
+      const medicine = medicineInput.value.trim();
+      if (!medicine) {
+        panel.hidden = true;
+        medicineSafetyBlocked = false;
+        medicineOverrideChecked = false;
+        sendButton.disabled = false;
+        return;
+      }
+
+      const patient = getPatient();
+      const visits = getVisits();
+      const allergies = Array.isArray(patient.allergies)
+        ? patient.allergies
+        : String(patient.allergies || "").split(",").map(value => value.trim()).filter(Boolean);
+      const hasPenicillinAllergy = allergies.some(allergy =>
+        normalizeMedicine(allergy).includes("penicillin")
+      );
+      const typedFamily = medicineFamily(medicine);
+      const penicillinDrug = matchMedicine(medicine, medicineFamilies.penicillins);
+      const cephalosporinDrug = matchMedicine(medicine, medicineFamilies.cephalosporins);
+      const messages = [];
+      medicineSafetyBlocked = Boolean(hasPenicillinAllergy && penicillinDrug);
+
+      if (medicineSafetyBlocked) {
+        messages.push(`STOP: ${patient.name} is allergic to penicillin. ${medicine} is a penicillin.`);
+      } else if (hasPenicillinAllergy && cephalosporinDrug) {
+        messages.push("Caution: possible cross-reaction with penicillin allergy.");
+      }
+
+      const latest = [...visits].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
+      const latestFamily = latest && medicineFamily(latest.medicine);
+      if (typedFamily && latestFamily &&
+          typedFamily.family === latestFamily.family &&
+          typedFamily.medicine !== latestFamily.medicine) {
+        messages.push(
+          `Already on ${latest.medicine} from ${latest.clinic} (${friendlyDate(latest.date)}). Both are ${typedFamily.family}: risk of doubling the effect.`
+        );
+      }
+
+      if (!messages.length) messages.push("✓ No conflicts with Sipho's shared record");
+      const tone = medicineSafetyBlocked ? "alert" : messages[0].startsWith("✓") ? "safe" : "caution";
+      panel.className = `medicine-safety ${tone}`;
+      panel.innerHTML = `
+        <p class="safety-heading">Impilo safety check. Not medical advice.</p>
+        ${messages.map(message => `<p class="safety-message">${escapeHtml(message)}</p>`).join("")}
+        ${medicineSafetyBlocked ? `<label class="safety-override">
+          <input id="medicine-override" type="checkbox"${medicineOverrideChecked ? " checked" : ""}>
+          <span>Override: I have checked</span>
+        </label>` : ""}
+      `;
+      panel.hidden = false;
+      sendButton.disabled = medicineSafetyBlocked && !medicineOverrideChecked;
+
+      const override = panel.querySelector("#medicine-override");
+      if (override) {
+        override.addEventListener("change", () => {
+          medicineOverrideChecked = override.checked;
+          updateMedicineSafety();
+        });
+      } else {
+        medicineOverrideChecked = false;
+      }
     }
 
     function updateClinicBanner(patient, visits) {
@@ -672,19 +986,25 @@
       const insights = getInsights(patient, visits, today);
       const chronologicalVisits = [...visits].sort((a, b) => String(a.date).localeCompare(String(b.date)));
       const orderedVisits = [...chronologicalVisits].reverse();
+      const forecast = forecastSystolic(chronologicalVisits);
       const latest = orderedVisits[0];
       const needsAttention = !latest || isAlert(latest) ||
         insights.some(item => item.level === "alert" || item.type === "alert");
       const visitArrived = visits.length > knownVisitCount;
+      const visitsChanged = JSON.stringify(visits) !== knownVisitsSignature;
       knownVisitCount = visits.length;
+      knownVisitsSignature = JSON.stringify(visits);
       clearTimeout(heroTimer);
       clearTimeout(heroFadeTimer);
+      clearInterval(smsTimer);
 
       updateClinicBanner(patient, visits);
+      updateSuggestedNextSteps(patient, visits, insights, visitsChanged);
       updateClinicWarning();
+      updateMedicineSafety();
       const heroSentence = insightHeroSentence(insights);
       patientView.innerHTML = `
-        <section class="card noticed-card${visitArrived ? " entering" : ""}" aria-live="polite">
+        <section class="card noticed-card${visitsChanged ? " entering" : ""}" aria-live="polite">
           <div class="noticed-heading">
             <span class="noticed-emoji" aria-hidden="true">🧠</span>
             <h2 class="noticed-title">Impilo noticed</h2>
@@ -694,6 +1014,10 @@
             : escapeHtml(heroSentence)}</p>
           <p class="noticed-meta">Based on ${visits.length} visits from ${new Set(visits.map(visit => visit.clinic).filter(Boolean)).size} clinics.</p>
         </section>
+        ${forecast ? `<section class="card forecast-card ${forecast.tone}${visitsChanged ? " entering" : ""}">
+          <p class="forecast-label">Next visit forecast</p>
+          <p class="forecast-copy">If nothing changes, BP could reach ~${forecast.value} by ${escapeHtml(friendlyDate(forecast.date))}.</p>
+        </section>` : ""}
         <header class="patient-header">
           <h1>${escapeHtml(patient.name)}</h1>
           <p class="condition">${escapeHtml(patient.condition)}</p>
@@ -748,6 +1072,12 @@
                           <span class="bar-date">${escapeHtml(friendlyDate(visit.date, true))}</span>
                         </div>`;
                       }).join("")}
+                      ${forecast ? `<div class="bar-item" title="Forecast: ${forecast.value}">
+                        <div class="bar-space">
+                          <div class="bar forecast-${forecast.tone}" style="height:${Math.max(3, Math.min(180, (forecast.value - 100) * 3))}px"></div>
+                        </div>
+                        <span class="bar-date">Forecast<br>~${forecast.value}</span>
+                      </div>` : ""}
                     </div>
                   </div>
                 </div>
@@ -777,20 +1107,40 @@
         </section>
         <section class="card">
           <button id="share-sms" class="demo-button" type="button">Share by SMS</button>
-          <div id="sms-box" class="sms-bubble" hidden>
-            <p id="sms-text" class="sms-text"></p>
-            <span id="sms-count" class="sms-count"></span>
+          <div class="feature-phone" aria-label="Feature phone SMS preview">
+            <div class="feature-earpiece" aria-hidden="true"></div>
+            <div class="feature-screen" aria-live="polite">
+              <p id="sms-header" class="feature-message-header">Inbox ready</p>
+              <p id="sms-text" class="feature-message-body">Tap Share by SMS to preview your message.</p>
+            </div>
+            <div class="feature-keypad" aria-hidden="true">
+              <span class="feature-key">1</span><span class="feature-key">2<br>ABC</span><span class="feature-key">3<br>DEF</span>
+              <span class="feature-key">4<br>GHI</span><span class="feature-key">5<br>JKL</span><span class="feature-key">6<br>MNO</span>
+              <span class="feature-key">7<br>PQRS</span><span class="feature-key">8<br>TUV</span><span class="feature-key">9<br>WXYZ</span>
+              <span class="feature-key">*</span><span class="feature-key">0<br>+</span><span class="feature-key">#</span>
+            </div>
           </div>
+          <p class="sms-caption">Works on any phone. No smartphone or data needed.<span id="sms-count" class="sms-count"></span></p>
         </section>
       `;
 
       document.getElementById("share-sms").addEventListener("click", () => {
         const sms = buildSmsSummary(getPatient(), getVisits(), insights)
           .replace(/\b\d{4}-\d{2}-\d{2}\b/g, date => friendlyDate(date));
-        const smsBox = document.getElementById("sms-box");
-        document.getElementById("sms-text").textContent = sms;
-        document.getElementById("sms-count").textContent = `${sms.length}/300 characters`;
-        smsBox.hidden = false;
+        const characters = Array.from(sms);
+        const header = document.getElementById("sms-header");
+        const body = document.getElementById("sms-text");
+        const count = document.getElementById("sms-count");
+        let index = 0;
+        clearInterval(smsTimer);
+        header.textContent = "1 new message from IMPILO";
+        body.textContent = "";
+        count.textContent = `0 / 160 characters`;
+        smsTimer = setInterval(() => {
+          body.textContent += characters[index++];
+          count.textContent = `${index} / 160 characters`;
+          if (index >= characters.length) clearInterval(smsTimer);
+        }, 18);
       });
 
       if (visitArrived) {
@@ -810,6 +1160,10 @@
 
     document.getElementById("systolic").addEventListener("input", updateClinicWarning);
     document.getElementById("diastolic").addEventListener("input", updateClinicWarning);
+    document.getElementById("medicine").addEventListener("input", () => {
+      medicineOverrideChecked = false;
+      updateMedicineSafety();
+    });
 
     document.getElementById("fill-demo-visit").addEventListener("click", () => {
       document.getElementById("clinic").value = "Gugulethu";
@@ -820,10 +1174,12 @@
       document.getElementById("dose").value = "5 mg";
       document.getElementById("note").value = "Dizzy spells";
       updateClinicWarning();
+      updateMedicineSafety();
     });
 
     clinicForm.addEventListener("submit", event => {
       event.preventDefault();
+      if (medicineSafetyBlocked && !medicineOverrideChecked) return;
       const values = new FormData(clinicForm);
       const result = addVisit({
         clinic: values.get("clinic"),
@@ -839,7 +1195,9 @@
         formMessage.className = "success";
         formMessage.textContent = "Sent to Sipho’s Impilo ✓";
         clinicForm.reset();
+        medicineOverrideChecked = false;
         updateClinicWarning();
+        updateMedicineSafety();
       } else {
         formMessage.className = "error";
         formMessage.textContent = result.error;
@@ -848,6 +1206,7 @@
 
     seedDemoData();
     knownVisitCount = getVisits().length;
+    knownVisitsSignature = JSON.stringify(getVisits());
     onDataChange(renderPatient);
     renderPatient();
   </script>
