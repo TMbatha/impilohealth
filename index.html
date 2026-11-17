@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impilo · Shared health</title>
+  <style>
+    :root {
+      font: 18px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #23332f;
+      background: #f1f5f3;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; }
+    button, input, textarea { font: inherit; }
+    [hidden] { display: none !important; }
+
+    .app-header {
+      padding: 18px 20px;
+      background: #0E7C66;
+      color: white;
+      box-shadow: 0 3px 14px #143b3024;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 1120px;
+      margin: 0 auto;
+      font-size: 1.45rem;
+      font-weight: 750;
+      letter-spacing: -.03em;
+    }
+
+    .pulse-icon { width: 35px; height: 35px; }
+    .page { max-width: 1120px; margin: 0 auto; padding: 24px 18px 48px; }
+    .workspace { display: grid; gap: 24px; align-items: start; }
+    .section-label {
+      margin: 0 0 10px 4px;
+      color: #687873;
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .card {
+      margin: 0 0 15px;
+      padding: 20px;
+      border: 1px solid #e6ece9;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 5px 18px #18352d0b;
+    }
+
+    h1, h2, p { margin-top: 0; }
+    h1 { margin-bottom: 4px; font-size: 1.55rem; line-height: 1.2; }
+    h2 { margin-bottom: 12px; font-size: 1.05rem; }
+    .muted, .condition, footer { color: #687873; }
+
+    .clinic-card { padding: 22px; }
+    .form-heading { display: flex; align-items: center; gap: 13px; margin-bottom: 6px; }
+    .form-icon {
+      display: grid;
+      flex: 0 0 46px;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      border-radius: 14px;
+      background: #e8f4f1;
+      color: #0E7C66;
+      font-size: 1.55rem;
+    }
+
+    .form-intro { margin: 0 0 18px; color: #687873; font-size: .91rem; }
+    .patient-banner {
+      margin: 18px 0;
+      padding: 14px;
+      border: 1px solid #dfeae5;
+      border-radius: 14px;
+      background: #f6faf8;
+    }
+
+    .banner-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 3px 8px; }
+    .banner-name { margin: 0; font-size: 1.05rem; }
+    .banner-condition { color: #687873; font-size: .88rem; }
+    .banner-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+    .allergy-pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      background: #ffebeb;
+      color: #B71C1C;
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    .last-bp { color: #53625d; font-size: .82rem; }
+    label { display: block; margin: 13px 0 5px; font-size: .86rem; font-weight: 700; }
+    input, textarea {
+      width: 100%;
+      border: 1px solid #cbd6d2;
+      border-radius: 10px;
+      padding: 11px 12px;
+      background: #fff;
+      color: #23332f;
+    }
+
+    input:focus-visible, textarea:focus-visible, button:focus-visible {
+      outline: 3px solid #81c9b8;
+      outline-offset: 2px;
+    }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    textarea { min-height: 82px; resize: vertical; }
+    .demo-button {
+      width: 100%;
+      margin-top: 15px;
+      border: 1px solid #b8dcd2;
+      border-radius: 11px;
+      padding: 10px 14px;
+      background: #edf7f4;
+      color: #0E7C66;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .send-button {
+      width: 100%;
+      min-height: 62px;
+      margin-top: 17px;
+      border: 0;
+      border-radius: 15px;
+      padding: 12px 16px;
+      background: #0E7C66;
+      color: #fff;
+      box-shadow: 0 7px 16px #0e7c6630;
+      font-size: 1.04rem;
+      font-weight: 750;
+      cursor: pointer;
+      transition: background .15s, transform .15s;
+    }
+
+    .send-button:hover { background: #096b58; transform: translateY(-1px); }
+    #form-message { margin: 12px 0 0; text-align: center; }
+    .success { color: #0E7C66; }
+    .error { color: #C62828; }
+
+    .phone-column { width: 100%; max-width: 450px; margin: 0 auto; }
+    .phone-shell {
+      position: relative;
+      padding: 17px 13px 20px;
+      border: 5px solid #23332f;
+      border-radius: 34px;
+      background: #e9efec;
+      box-shadow: 0 14px 35px #18352d1c;
+    }
+
+    .phone-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 6px 13px;
+      color: #53625d;
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .mini-pulse { width: 20px; height: 20px; color: #0E7C66; }
+    .patient-header { padding: 8px 3px 14px; }
+    .patient-header h1 { font-size: 1.3rem; }
+    .patient-header .condition { margin: 3px 0 9px; font-size: .9rem; }
+
+    .status-card {
+      overflow: hidden;
+      border: 1px solid;
+      transition: box-shadow .2s, transform .2s;
+    }
+
+    .status-card.stable { border-color: #bfdfd5; background: #e8f4f1; }
+    .status-card.attention { border-color: #f0c8c5; background: #fff0ef; }
+    .status-heading { display: flex; align-items: center; gap: 9px; }
+    .status-icon {
+      display: grid;
+      flex: 0 0 30px;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 50%;
+      background: #0E7C66;
+      color: white;
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .status-card.attention .status-icon { background: #C62828; }
+    .status-label { margin: 0; color: #0E7C66; font-size: .95rem; font-weight: 800; }
+    .status-card.attention .status-label { color: #C62828; }
+    .latest-label { margin: 15px 0 0; color: #687873; font-size: .78rem; font-weight: 700; }
+    .latest-reading { margin: 0; color: #163d34; font-size: 3.25rem; font-weight: 800; letter-spacing: -.07em; line-height: 1.08; }
+    .status-card.attention .latest-reading { color: #B71C1C; }
+    .latest-detail { margin: 5px 0 0; color: #53625d; font-size: .78rem; }
+
+    .insight-list { display: grid; gap: 8px; }
+    .insight-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin: 0;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f0f4f2;
+      color: #53625d;
+      font-size: .84rem;
+      line-height: 1.4;
+    }
+
+    .insight-card.alert { background: #fff0ef; color: #B71C1C; }
+    .insight-icon {
+      display: grid;
+      flex: 0 0 22px;
+      width: 22px;
+      height: 22px;
+      place-items: center;
+      border-radius: 50%;
+      background: #dce5e1;
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .insight-card.alert .insight-icon { background: #C62828; color: #fff; }
+    .chart-legend { margin: -4px 0 8px; color: #687873; font-size: .76rem; }
+    .chart-scroll { overflow-x: auto; }
+    .chart {
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      min-width: 250px;
+    }
+
+    .y-axis { position: relative; height: 184px; color: #687873; font-size: .69rem; }
+    .y-100 { position: absolute; right: 3px; bottom: -5px; }
+    .chart-plot { position: relative; height: 180px; border-bottom: 1px solid #bfcac5; }
+    .threshold-line {
+      position: absolute;
+      z-index: 1;
+      top: 60px;
+      right: 0;
+      left: 0;
+      border-top: 2px dashed #C62828;
+    }
+
+    .threshold-line span {
+      position: absolute;
+      top: -19px;
+      right: 0;
+      padding: 0 3px;
+      background: #fff;
+      color: #C62828;
+      font-size: .67rem;
+      font-weight: 700;
+    }
+
+    .chart-bars {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+    }
+
+    .bar-item {
+      display: flex;
+      flex: 0 0 54px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 0;
+      height: 100%;
+      z-index: 2;
+    }
+
+    .bar-space { display: flex; flex: 1; align-items: flex-end; }
+    .bar {
+      width: 23px;
+      min-height: 3px;
+      border-radius: 7px 7px 2px 2px;
+      background: #0E7C66;
+    }
+
+    .bar.alert { background: #C62828; }
+    .bar-date { padding-top: 5px; color: #53625d; font-size: .67rem; white-space: nowrap; }
+    .timeline { position: relative; padding-left: 22px; }
+    .timeline::before {
+      position: absolute;
+      top: 8px;
+      bottom: 10px;
+      left: 7px;
+      width: 2px;
+      background: #dce5e1;
+      content: "";
+    }
+
+    .visit { position: relative; margin-bottom: 17px; }
+    .visit:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute;
+      top: 5px;
+      left: -20px;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #0E7C66;
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .timeline-dot.alert { border-color: #C62828; background: #C62828; }
+    .visit-date { margin: 0 0 3px; font-size: .83rem; font-weight: 750; }
+    .visit-clinic { color: #687873; font-weight: 500; }
+    .visit-details { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; color: #53625d; font-size: .8rem; }
+    .bp-pill { border-radius: 999px; padding: 2px 9px; background: #e8f4f1; color: #0E7C66; font-weight: 800; }
+    .bp-pill.alert { background: #ffebeb; color: #B71C1C; }
+    .tag { border-radius: 999px; padding: 2px 8px; background: #edf1ef; color: #53625d; font-size: .7rem; }
+
+    .sms-bubble {
+      margin: 12px 0 0;
+      padding: 13px;
+      border: 1px solid #d8e6e0;
+      border-radius: 15px 15px 3px 15px;
+      background: #eaf5f0;
+      color: #23332f;
+      font-size: .82rem;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .sms-text { margin: 0; }
+    .sms-count { display: block; margin-top: 8px; color: #687873; font-size: .7rem; text-align: right; }
+    footer { padding: 4px 8px 12px; font-size: .72rem; text-align: center; }
+    .toast {
+      position: fixed;
+      z-index: 10;
+      top: 16px;
+      left: 50%;
+      max-width: calc(100vw - 28px);
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #163d34;
+      color: #fff;
+      box-shadow: 0 8px 25px #102f2633;
+      font-size: .9rem;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -12px);
+      transition: opacity .2s, transform .2s;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .phone-shell.arriving { animation: phoneFlash .9s ease-out; }
+    .status-card.arriving { animation: statusGlow 1.2s ease-out; }
+    @keyframes phoneFlash {
+      0%, 100% { box-shadow: 0 14px 35px #18352d1c; }
+      35% { box-shadow: 0 0 0 7px #0E7C6640, 0 14px 35px #18352d1c; }
+    }
+
+    @keyframes statusGlow {
+      0%, 100% { transform: scale(1); box-shadow: none; }
+      35% { transform: scale(1.025); box-shadow: 0 0 28px #0e7c6655; }
+    }
+
+    @media (min-width: 800px) {
+      .workspace { grid-template-columns: minmax(0, 1fr) minmax(340px, 430px); gap: 34px; }
+      .clinic-column { position: sticky; top: 20px; }
+      .phone-column { max-width: 430px; }
+    }
+
+    @media (max-width: 380px) {
+      .page { padding-right: 12px; padding-left: 12px; }
+      .form-grid { grid-template-columns: 1fr; gap: 0; }
+      .phone-shell { padding-right: 9px; padding-left: 9px; border-radius: 28px; }
+      .latest-reading { font-size: 2.9rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <svg class="pulse-icon" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M3 21h8l4-11 7 21 5-14 3 4h7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Impilo</span>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="workspace">
+      <section class="clinic-column" aria-labelledby="clinic-title">
+        <p class="section-label">Clinic view</p>
+        <div class="card clinic-card">
+          <div class="form-heading">
+            <span class="form-icon" aria-hidden="true">＋</span>
+            <h1 id="clinic-title">Share a visit</h1>
+          </div>
+          <p class="form-intro">Add a visit to Sipho’s shared health record.</p>
+
+          <div id="clinic-patient-banner" class="patient-banner"></div>
+
+          <form id="clinic-form">
+            <label for="clinic">Clinic</label>
+            <input id="clinic" name="clinic" required>
+
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" required>
+
+            <div class="form-grid">
+              <div>
+                <label for="systolic">Systolic</label>
+                <input id="systolic" name="systolic" type="number" min="1" required>
+              </div>
+              <div>
+                <label for="diastolic">Diastolic</label>
+                <input id="diastolic" name="diastolic" type="number" min="1" required>
+              </div>
+            </div>
+
+            <label for="medicine">Medicine</label>
+            <input id="medicine" name="medicine" required>
+
+            <label for="dose">Dose</label>
+            <input id="dose" name="dose" required>
+
+            <label for="note">Note</label>
+            <textarea id="note" name="note"></textarea>
+
+            <button id="fill-demo-visit" class="demo-button" type="button">Fill demo visit</button>
+            <button class="send-button" type="submit">Send to patient’s Impilo</button>
+            <p id="form-message" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <section class="phone-column" aria-label="Patient phone preview">
+        <p class="section-label">Patient view</p>
+        <div id="phone-shell" class="phone-shell">
+          <div class="phone-top">
+            <svg class="mini-pulse" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+              <path d="M3 21h8l4-11 7 21 5-14 3 4h7" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Sipho’s Impilo</span>
+          </div>
+          <div id="patient-view"></div>
+        </div>
+        <footer>Shows records shared by your clinics. Not medical advice.</footer>
+      </section>
+    </div>
+  </main>
+
+  <div id="arrival-toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="insights.js"></script>
+  <script>
+    const patientView = document.getElementById("patient-view");
+    const phoneShell = document.getElementById("phone-shell");
+    const clinicForm = document.getElementById("clinic-form");
+    const formMessage = document.getElementById("form-message");
+    const arrivalToast = document.getElementById("arrival-toast");
+    let knownVisitCount = 0;
+    let toastTimer;
+
+    function todayString() {
+      const now = new Date();
+      return [
+        now.getFullYear(),
+        String(now.getMonth() + 1).padStart(2, "0"),
+        String(now.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    function friendlyDate(value, short = false) {
+      if (!value) return "";
+      const date = new Date(`${String(value).slice(0, 10)}T12:00:00`);
+      if (Number.isNaN(date.getTime())) return String(value);
+      const options = short
+        ? { month: "short", day: "numeric" }
+        : { month: "short", day: "numeric", year: "numeric" };
+      return date.toLocaleDateString(undefined, options);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    function allergyText(patient) {
+      const allergies = Array.isArray(patient.allergies)
+        ? patient.allergies.join(", ")
+        : patient.allergies;
+      return allergies || "None listed";
+    }
+
+    function isAlert(visit) {
+      return Number(visit.systolic) >= 140 || Number(visit.diastolic) >= 90;
+    }
+
+    function shorterInsight(text) {
+      let match = text.match(/^Latest reading is high: ([^ ]+) \(.+\)\.?$/);
+      if (match) return `High BP: ${match[1]}.`;
+
+      match = text.match(/^Rising: up from an average of (\d+) to (\d+)\.?$/);
+      if (match) return `BP rising: ${match[1]} → ${match[2]}.`;
+
+      match = text.match(/^Readings rose after the dose changed to (.+?) at .+? \(\d{4}-\d{2}-\d{2}\): average \d+ → \d+\.?$/);
+      if (match) return `BP rose after dose changed to ${match[1]}.`;
+
+      match = text.match(/^No visit for (\d+) days\.?$/);
+      if (match) return `No visit in ${match[1]} days.`;
+
+      match = text.match(/^Seen at (\d+) clinics\. Impilo connects them\.?$/);
+      if (match) return `Shared across ${match[1]} clinics.`;
+
+      return text.replace(/\b\d{4}-\d{2}-\d{2}\b/g, date => friendlyDate(date));
+    }
+
+    function updateClinicBanner(patient, visits) {
+      const latest = [...visits].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
+      document.getElementById("clinic-patient-banner").innerHTML = `
+        <div class="banner-top">
+          <strong class="banner-name">${escapeHtml(patient.name)}</strong>
+          <span class="banner-condition">${escapeHtml(patient.condition)}</span>
+        </div>
+        <div class="banner-meta">
+          <span class="allergy-pill">Allergy: ${escapeHtml(allergyText(patient))}</span>
+          <span class="last-bp">${latest
+            ? `Last BP ${escapeHtml(latest.systolic)}/${escapeHtml(latest.diastolic)} · ${escapeHtml(friendlyDate(latest.date))}`
+            : "No BP reading yet"}</span>
+        </div>
+      `;
+    }
+
+    function showArrival(visit) {
+      phoneShell.classList.remove("arriving");
+      void phoneShell.offsetWidth;
+      phoneShell.classList.add("arriving");
+      const statusCard = patientView.querySelector(".status-card");
+      if (statusCard) statusCard.classList.add("arriving");
+
+      arrivalToast.textContent = `New visit received from ${visit.clinic || "your clinic"}.`;
+      arrivalToast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        arrivalToast.classList.remove("show");
+        phoneShell.classList.remove("arriving");
+        if (statusCard) statusCard.classList.remove("arriving");
+      }, 3200);
+    }
+
+    function renderPatient() {
+      const patient = getPatient();
+      const visits = getVisits();
+      const today = todayString();
+      const insights = getInsights(patient, visits, today);
+      const chronologicalVisits = [...visits].sort((a, b) => String(a.date).localeCompare(String(b.date)));
+      const orderedVisits = [...chronologicalVisits].reverse();
+      const latest = orderedVisits[0];
+      const needsAttention = !latest || isAlert(latest) ||
+        insights.some(item => item.level === "alert" || item.type === "alert");
+      const visitArrived = visits.length > knownVisitCount;
+      knownVisitCount = visits.length;
+
+      updateClinicBanner(patient, visits);
+      patientView.innerHTML = `
+        <header class="patient-header">
+          <h1>${escapeHtml(patient.name)}</h1>
+          <p class="condition">${escapeHtml(patient.condition)}</p>
+          <span class="allergy-pill">Allergy: ${escapeHtml(allergyText(patient))}</span>
+        </header>
+        <section class="card status-card ${needsAttention ? "attention" : "stable"}">
+          <div class="status-heading">
+            <span class="status-icon" aria-hidden="true">${needsAttention ? "!" : "✓"}</span>
+            <p class="status-label">${needsAttention ? "Needs attention" : "Stable"}</p>
+          </div>
+          <p class="latest-label">Latest blood pressure</p>
+          <p class="latest-reading">${latest
+            ? `${escapeHtml(latest.systolic)}/${escapeHtml(latest.diastolic)}`
+            : "—/—"}</p>
+          <p class="latest-detail">${latest
+            ? `${escapeHtml(friendlyDate(latest.date))} · ${escapeHtml(latest.clinic)}`
+            : "No readings shared yet"}</p>
+        </section>
+        <section class="card">
+          <h2>Impilo Insights</h2>
+          <div class="insight-list">
+            ${insights.map(item => {
+              const text = shorterInsight(item.text ?? item.message ?? item.title ?? "");
+              const alert = item.level === "alert" || item.type === "alert";
+              return `<p class="insight-card${alert ? " alert" : ""}">
+                <span class="insight-icon" aria-hidden="true">${alert ? "!" : "i"}</span>
+                <span>${escapeHtml(text)}</span>
+              </p>`;
+            }).join("") || '<p class="muted">No insights today.</p>'}
+          </div>
+        </section>
+        <section class="card">
+          <h2>Blood pressure trend</h2>
+          <p class="chart-legend">Systolic · mmHg</p>
+          ${chronologicalVisits.length ? `
+            <div class="chart-scroll">
+              <div class="chart">
+                <div class="y-axis" aria-hidden="true">
+                  <span class="y-100">100</span>
+                </div>
+                <div>
+                  <div class="chart-plot">
+                    <div class="threshold-line"><span>140</span></div>
+                    <div class="chart-bars">
+                      ${chronologicalVisits.map(visit => {
+                        const systolic = Number(visit.systolic) || 0;
+                        const height = Math.max(3, Math.min(180, (systolic - 100) * 3));
+                        return `<div class="bar-item" title="${escapeHtml(visit.systolic)}/${escapeHtml(visit.diastolic)}">
+                          <div class="bar-space">
+                            <div class="bar${isAlert(visit) ? " alert" : ""}" style="height:${height}px"></div>
+                          </div>
+                          <span class="bar-date">${escapeHtml(friendlyDate(visit.date, true))}</span>
+                        </div>`;
+                      }).join("")}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ` : '<p class="muted">No readings shared yet.</p>'}
+        </section>
+        <section class="card">
+          <h2>Timeline</h2>
+          ${orderedVisits.length ? `
+            <div class="timeline">
+              ${orderedVisits.map((visit, index) => {
+                const olderVisit = orderedVisits[index + 1];
+                const doseChanged = olderVisit && visit.dose !== olderVisit.dose;
+                return `<article class="visit">
+                  <span class="timeline-dot${isAlert(visit) ? " alert" : ""}" aria-hidden="true"></span>
+                  <p class="visit-date">${escapeHtml(friendlyDate(visit.date))} <span class="visit-clinic">· ${escapeHtml(visit.clinic)}</span></p>
+                  <div class="visit-details">
+                    <span class="bp-pill${isAlert(visit) ? " alert" : ""}">${escapeHtml(visit.systolic)}/${escapeHtml(visit.diastolic)}</span>
+                    <span>${escapeHtml(visit.medicine)} · ${escapeHtml(visit.dose)}</span>
+                    ${doseChanged ? '<span class="tag">Dose changed</span>' : ""}
+                  </div>
+                </article>`;
+              }).join("")}
+            </div>
+          ` : '<p class="muted">No visits shared yet.</p>'}
+        </section>
+        <section class="card">
+          <button id="share-sms" class="demo-button" type="button">Share by SMS</button>
+          <div id="sms-box" class="sms-bubble" hidden>
+            <p id="sms-text" class="sms-text"></p>
+            <span id="sms-count" class="sms-count"></span>
+          </div>
+        </section>
+      `;
+
+      document.getElementById("share-sms").addEventListener("click", () => {
+        const sms = buildSmsSummary(getPatient(), getVisits(), insights)
+          .replace(/\b\d{4}-\d{2}-\d{2}\b/g, date => friendlyDate(date));
+        const smsBox = document.getElementById("sms-box");
+        document.getElementById("sms-text").textContent = sms;
+        document.getElementById("sms-count").textContent = `${sms.length}/300 characters`;
+        smsBox.hidden = false;
+      });
+
+      if (visitArrived) showArrival(visits[visits.length - 1]);
+    }
+
+    document.getElementById("fill-demo-visit").addEventListener("click", () => {
+      document.getElementById("clinic").value = "Gugulethu";
+      document.getElementById("date").value = todayString();
+      document.getElementById("systolic").value = "158";
+      document.getElementById("diastolic").value = "98";
+      document.getElementById("medicine").value = "Amlodipine";
+      document.getElementById("dose").value = "5 mg";
+      document.getElementById("note").value = "Dizzy spells";
+    });
+
+    clinicForm.addEventListener("submit", event => {
+      event.preventDefault();
+      const values = new FormData(clinicForm);
+      const result = addVisit({
+        clinic: values.get("clinic"),
+        date: values.get("date"),
+        systolic: Number(values.get("systolic")),
+        diastolic: Number(values.get("diastolic")),
+        medicine: values.get("medicine"),
+        dose: values.get("dose"),
+        note: values.get("note")
+      });
+
+      if (result.ok) {
+        formMessage.className = "success";
+        formMessage.textContent = "Sent to Sipho’s Impilo ✓";
+        clinicForm.reset();
+      } else {
+        formMessage.className = "error";
+        formMessage.textContent = result.error;
+      }
+    });
+
+    seedDemoData();
+    knownVisitCount = getVisits().length;
+    onDataChange(renderPatient);
+    renderPatient();
+  </script>
+</body>
+</html>
