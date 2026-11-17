@@ -1,0 +1,13 @@
+{
+  "name": "FX Health",
+  "short_name": "FX Health",
+  "description": "Your clinician-reviewed preventive health results.",
+  "start_url": "/mobile/",
+  "scope": "/mobile/",
+  "display": "standalone",
+  "background_color": "#f3f6f5",
+  "theme_color": "#0e6e5c",
+  "icons": [
+    { "src": "/mobile/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

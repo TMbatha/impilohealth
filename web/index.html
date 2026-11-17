@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FX Health</title>
+  <link rel="icon" href="/mobile/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/shared/fx.css">
+  <style>
+    .topbar { position: sticky; top: 0; z-index: 5; background: var(--brand); color: var(--brand-ink); }
+    .topbar-inner { max-width: 1180px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -.02em; color: inherit; text-decoration: none; }
+    .nav { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+    .nav a { color: inherit; text-decoration: none; padding: 6px 12px; border-radius: 10px; font-weight: 600; opacity: .85; }
+    .nav a[aria-current="page"] { background: rgba(255,255,255,.18); opacity: 1; }
+    .role { display: inline-flex; border-radius: 999px; background: rgba(0,0,0,.18); padding: 3px; }
+    .role button { border: 0; background: transparent; color: inherit; padding: 6px 14px; border-radius: 999px; font-weight: 700; cursor: pointer; }
+    .role button[aria-pressed="true"] { background: var(--surface); color: var(--brand); }
+    main { max-width: 1180px; margin: 0 auto; padding: 24px 20px 48px; }
+    .narrow { max-width: 760px; }
+    .hero { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 8px; }
+    .hero .card { margin: 0; }
+    .welcome h2 { font-size: 1.8rem; }
+    .section-title { margin: 26px 0 10px; font-size: 1.1rem; }
+    .console { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 20px; align-items: start; }
+    .console-side { position: sticky; top: 76px; }
+    .console-side textarea { width: 100%; min-height: 260px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); resize: vertical; }
+    .queue-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-decoration: none; color: inherit; }
+    .queue-item:hover { border-color: var(--brand); }
+    .confirm { background: var(--ok-soft); color: var(--ok); border-radius: 12px; padding: 12px; font-weight: 650; }
+    .help dt { font-weight: 700; margin-top: 12px; } .help dd { margin: 4px 0 0; color: var(--muted); }
+    .back { display: inline-block; margin-bottom: 12px; font-weight: 600; text-decoration: none; }
+    @media (max-width: 860px) { .hero, .console { grid-template-columns: 1fr; } .console-side { position: static; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="#/">FX Health</a>
+      <nav class="nav" id="nav" aria-label="Main"></nav>
+      <div class="role" role="group" aria-label="View as">
+        <button type="button" data-role="member">Member</button>
+        <button type="button" data-role="clinician">Clinician</button>
+      </div>
+    </div>
+  </header>
+  <main id="app" tabindex="-1"></main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
