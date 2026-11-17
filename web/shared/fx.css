@@ -105,3 +105,5 @@ h3 { font-size: 1rem; font-weight: 650; }
 .not-calculable { border-radius: 4px; }
 .empty { padding: 28px 18px; }
 :focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.demo-bar { max-width: 1180px; margin: 0 auto; padding: 12px 20px 28px; color: var(--muted); font-size: .82rem; border-top: 1px solid var(--line); }
+.demo-bar button { background: none; border: 1px solid var(--line); border-radius: 4px; padding: 3px 8px; margin-left: 6px; color: var(--text); cursor: pointer; font-size: .82rem; }

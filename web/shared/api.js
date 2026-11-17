@@ -1,14 +1,43 @@
-// Single API client for web and mobile. Same origin as the Express server.
+// Single API client for web and mobile.
+// - With the Express server (npm start): real HTTP calls to /api/...
+// - On GitHub Pages (static hosting, no server): the same backend runs in the browser
+//   (shared/backend.js), with state saved in this browser. Force it with ?static=1.
+export const STATIC_MODE = /\.github\.io$/.test(location.hostname) || new URLSearchParams(location.search).has('static');
+
+let backendReady = null;
+function backend() {
+  if (!backendReady) {
+    backendReady = new Promise((resolve, reject) => {
+      if (globalThis.FXBackend) return resolve(globalThis.FXBackend);
+      const s = document.createElement('script');
+      s.src = new URL('./backend.js', import.meta.url).href;
+      s.onload = () => resolve(globalThis.FXBackend);
+      s.onerror = () => reject(new Error('Could not load the offline backend'));
+      document.head.appendChild(s);
+    });
+  }
+  return backendReady;
+}
+
 async function request(method, path, body) {
-  const res = await fetch(path, {
-    method,
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-    cache: 'no-store',
-  });
-  if (res.status === 404) return null;
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  let status;
+  let data;
+  if (STATIC_MODE) {
+    const res = (await backend()).request(method, path, body);
+    status = res.status;
+    data = res.body;
+  } else {
+    const res = await fetch(path, {
+      method,
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: body ? JSON.stringify(body) : undefined,
+      cache: 'no-store',
+    });
+    status = res.status;
+    data = await res.json().catch(() => ({}));
+  }
+  if (status === 404 && method === 'GET') return null;
+  if (status >= 400) throw new Error((data && data.error) || `Request failed (${status})`);
   return data;
 }
 
@@ -33,4 +62,6 @@ export const api = {
   memberResults: () => request('GET', '/api/member/results'),
   memberMessages: () => request('GET', '/api/member/messages'),
   memberResult: (id) => request('GET', `/api/member/results/${encodeURIComponent(id)}`),
+  // GitHub Pages only: wipe this browser's demo data back to the seed
+  resetDemo: () => request('POST', '/api/demo/reset'),
 };
