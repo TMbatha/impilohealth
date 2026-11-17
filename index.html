@@ -182,6 +182,41 @@
 
     .status-card.stable { border-color: #bfdfd5; background: #e8f4f1; }
     .status-card.attention { border-color: #f0c8c5; background: #fff0ef; }
+    .noticed-card {
+      border: 1px solid transparent;
+      border-radius: 20px;
+      background:
+        linear-gradient(#fff, #fff) padding-box,
+        linear-gradient(135deg, #a9decf, #0E7C66) border-box;
+      transform-origin: top center;
+    }
+
+    .noticed-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .noticed-emoji { font-size: 1.45rem; line-height: 1; }
+    .noticed-title { margin: 0; font-size: 1rem; font-weight: 800; }
+    .noticed-copy {
+      margin: 0;
+      color: #23332f;
+      font-size: 1.11rem;
+      font-weight: 550;
+      line-height: 1.4;
+      transition: opacity .25s ease;
+    }
+
+    .noticed-copy.fading { opacity: 0; }
+    .noticed-meta { margin: 8px 0 0; color: #687873; font-size: .73rem; }
+    .noticed-card.entering { animation: noticedEnter .45s ease-out both; }
+    .analysing-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-left: 4px;
+      border-radius: 50%;
+      background: #0E7C66;
+      vertical-align: middle;
+      animation: pulseDot .65s ease-in-out infinite alternate;
+    }
+
     .status-heading { display: flex; align-items: center; gap: 9px; }
     .status-icon {
       display: grid;
@@ -232,6 +267,17 @@
     }
 
     .insight-card.alert .insight-icon { background: #C62828; color: #fff; }
+    .clinic-warning {
+      margin-top: 13px;
+      border: 1px solid #e6b849;
+      border-radius: 13px;
+      padding: 12px 13px;
+      background: #fff7df;
+      color: #75530b;
+      font-size: .85rem;
+      line-height: 1.4;
+    }
+
     .chart-legend { margin: -4px 0 8px; color: #687873; font-size: .76rem; }
     .chart-scroll { overflow-x: auto; }
     .chart {
@@ -371,6 +417,16 @@
       35% { transform: scale(1.025); box-shadow: 0 0 28px #0e7c6655; }
     }
 
+    @keyframes noticedEnter {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulseDot {
+      from { opacity: .35; transform: scale(.8); }
+      to { opacity: 1; transform: scale(1.15); }
+    }
+
     @media (min-width: 800px) {
       .workspace { grid-template-columns: minmax(0, 1fr) minmax(340px, 430px); gap: 34px; }
       .clinic-column { position: sticky; top: 20px; }
@@ -440,6 +496,7 @@
             <textarea id="note" name="note"></textarea>
 
             <button id="fill-demo-visit" class="demo-button" type="button">Fill demo visit</button>
+            <div id="clinic-warning" class="clinic-warning" role="status" hidden></div>
             <button class="send-button" type="submit">Send to patient’s Impilo</button>
             <p id="form-message" role="status" aria-live="polite"></p>
           </form>
@@ -474,6 +531,8 @@
     const arrivalToast = document.getElementById("arrival-toast");
     let knownVisitCount = 0;
     let toastTimer;
+    let heroTimer;
+    let heroFadeTimer;
 
     function todayString() {
       const now = new Date();
@@ -534,6 +593,45 @@
       return text.replace(/\b\d{4}-\d{2}-\d{2}\b/g, date => friendlyDate(date));
     }
 
+    function insightHeroSentence(insights) {
+      const alerts = insights.filter(item => item.level === "alert" || item.type === "alert");
+      const doseAlert = alerts.find(item => /dose changed/i.test(item.text || ""));
+      if (doseAlert) {
+        const match = doseAlert.text.match(
+          /^Readings rose after the dose changed to (.+?) at (.+?) \(\d{4}-\d{2}-\d{2}\): average (.+?) → (.+?)\.?$/
+        );
+        if (match) {
+          return `Since the dose changed to ${match[1]} at ${match[2]}, average BP went from ${match[3]} to ${match[4]}. Ask your nurse about your dose.`;
+        }
+      }
+      if (alerts.length) return shorterInsight(alerts[0].text || alerts[0].message || "");
+      return "Your readings look stable.";
+    }
+
+    function updateClinicWarning() {
+      const systolic = Number(document.getElementById("systolic").value);
+      const diastolic = Number(document.getElementById("diastolic").value);
+      const warning = document.getElementById("clinic-warning");
+      const elevated = systolic >= 140 || diastolic >= 90;
+      if (!elevated) {
+        warning.hidden = true;
+        return;
+      }
+
+      const patient = getPatient();
+      const visits = getVisits();
+      const insights = getInsights(patient, visits, todayString());
+      const clinicCount = new Set(visits.map(visit => visit.clinic).filter(Boolean)).size;
+      const doseChangeAlert = insights.some(item =>
+        (item.level === "alert" || item.type === "alert") &&
+        /dose changed/i.test(item.text || "")
+      );
+      warning.textContent = doseChangeAlert
+        ? `⚠ Pattern across ${clinicCount} clinics: BP rising since the last dose change. Review before prescribing.`
+        : `⚠ High BP across ${clinicCount} clinics. Review before prescribing.`;
+      warning.hidden = false;
+    }
+
     function updateClinicBanner(patient, visits) {
       const latest = [...visits].sort((a, b) => String(b.date).localeCompare(String(a.date)))[0];
       document.getElementById("clinic-patient-banner").innerHTML = `
@@ -579,9 +677,23 @@
         insights.some(item => item.level === "alert" || item.type === "alert");
       const visitArrived = visits.length > knownVisitCount;
       knownVisitCount = visits.length;
+      clearTimeout(heroTimer);
+      clearTimeout(heroFadeTimer);
 
       updateClinicBanner(patient, visits);
+      updateClinicWarning();
+      const heroSentence = insightHeroSentence(insights);
       patientView.innerHTML = `
+        <section class="card noticed-card${visitArrived ? " entering" : ""}" aria-live="polite">
+          <div class="noticed-heading">
+            <span class="noticed-emoji" aria-hidden="true">🧠</span>
+            <h2 class="noticed-title">Impilo noticed</h2>
+          </div>
+          <p id="noticed-copy" class="noticed-copy">${visitArrived
+            ? `Analysing ${visits.length} visits from ${new Set(visits.map(visit => visit.clinic).filter(Boolean)).size} clinics…<span class="analysing-dot" aria-hidden="true"></span>`
+            : escapeHtml(heroSentence)}</p>
+          <p class="noticed-meta">Based on ${visits.length} visits from ${new Set(visits.map(visit => visit.clinic).filter(Boolean)).size} clinics.</p>
+        </section>
         <header class="patient-header">
           <h1>${escapeHtml(patient.name)}</h1>
           <p class="condition">${escapeHtml(patient.condition)}</p>
@@ -681,8 +793,23 @@
         smsBox.hidden = false;
       });
 
+      if (visitArrived) {
+        heroTimer = setTimeout(() => {
+          const copy = document.getElementById("noticed-copy");
+          if (!copy) return;
+          copy.classList.add("fading");
+          heroFadeTimer = setTimeout(() => {
+            copy.textContent = heroSentence;
+            copy.classList.remove("fading");
+          }, 250);
+        }, 1200);
+      }
+
       if (visitArrived) showArrival(visits[visits.length - 1]);
     }
+
+    document.getElementById("systolic").addEventListener("input", updateClinicWarning);
+    document.getElementById("diastolic").addEventListener("input", updateClinicWarning);
 
     document.getElementById("fill-demo-visit").addEventListener("click", () => {
       document.getElementById("clinic").value = "Gugulethu";
@@ -692,6 +819,7 @@
       document.getElementById("medicine").value = "Amlodipine";
       document.getElementById("dose").value = "5 mg";
       document.getElementById("note").value = "Dizzy spells";
+      updateClinicWarning();
     });
 
     clinicForm.addEventListener("submit", event => {
@@ -711,6 +839,7 @@
         formMessage.className = "success";
         formMessage.textContent = "Sent to Sipho’s Impilo ✓";
         clinicForm.reset();
+        updateClinicWarning();
       } else {
         formMessage.className = "error";
         formMessage.textContent = result.error;
