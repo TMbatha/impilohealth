@@ -1,7 +1,7 @@
 // Caches the app shell only. API responses are NEVER cached: a stale cache could
 // hide a release, or keep showing results after access changes.
 // Paths are relative to this file so it works at / (Express) and /impilohealth/web/mobile/ (GitHub Pages).
-const CACHE = 'fx-mobile-v4';
+const CACHE = 'impilo-mobile-v5';
 const SHELL = ['./', './index.html', './mobile.js', './icon.svg', './manifest.webmanifest',
   '../shared/fx.css', '../shared/api.js', '../shared/render.js', '../shared/backend.js'];
 

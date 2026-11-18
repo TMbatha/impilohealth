@@ -10,7 +10,7 @@
 const { createContext, serialize } = require('../infrastructure/context');
 const { dispatch, isMutation } = require('../infrastructure/http/routeTable');
 
-const KEY = 'fx-health-demo-state-v1';
+const KEY = 'impilo-demo-state-v1';
 let memoryState = null; // fallback when storage is blocked
 
 function load() {

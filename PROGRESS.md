@@ -1,4 +1,4 @@
-# FX Health MVP: submission tracker
+# Impilo MVP: submission tracker
 
 Run: `npm install && npm start`, then open http://localhost:3000 (web) and http://localhost:3000/mobile/ (mobile app).
 

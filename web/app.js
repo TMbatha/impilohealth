@@ -39,7 +39,7 @@ async function memberDashboard() {
   app.innerHTML = `
     <div class="hero">
       <section class="card welcome">
-        <p class="eyebrow">Member since 2026 · Moderate risk plan</p>
+        <p class="eyebrow">Impilo member · Moderate risk plan</p>
         <h2>${esc(name)}, your health record</h2>
         <p class="muted">Every result is reviewed by your clinician before it appears here.</p>
         ${latest ? `<a class="btn btn-primary" href="#/results/${esc(latest.id)}">View latest result</a>` : ''}
@@ -330,6 +330,7 @@ route();
 
 // GitHub Pages: no server, so data lives in this browser. Offer a reset for repeat demos.
 if (STATIC_MODE) {
+  document.querySelector('.logo').setAttribute('href', '../'); // back to the landing page
   const bar = document.createElement('footer');
   bar.className = 'demo-bar';
   bar.innerHTML = 'Demo mode: data is saved in this browser only. <button type="button">Reset demo data</button>';

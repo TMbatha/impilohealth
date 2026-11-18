@@ -3,7 +3,7 @@
 /**
  * Tiny dependency-free CommonJS bundler: packs src/browser/entry.js and everything it
  * requires (domain, application, infrastructure) into web/shared/backend.js, which sets
- * globalThis.FXBackend. Run: npm run build:static
+ * globalThis.ImpiloBackend. Run: npm run build:static
  */
 const fs = require('fs');
 const path = require('path');
@@ -63,7 +63,7 @@ function load(id) {
   });
   return module.exports;
 }
-globalThis.FXBackend = load(0);
+globalThis.ImpiloBackend = load(0);
 })();
 `;
 

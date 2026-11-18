@@ -8,10 +8,10 @@ let backendReady = null;
 function backend() {
   if (!backendReady) {
     backendReady = new Promise((resolve, reject) => {
-      if (globalThis.FXBackend) return resolve(globalThis.FXBackend);
+      if (globalThis.ImpiloBackend) return resolve(globalThis.ImpiloBackend);
       const s = document.createElement('script');
       s.src = new URL('./backend.js', import.meta.url).href;
-      s.onload = () => resolve(globalThis.FXBackend);
+      s.onload = () => resolve(globalThis.ImpiloBackend);
       s.onerror = () => reject(new Error('Could not load the offline backend'));
       document.head.appendChild(s);
     });

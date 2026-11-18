@@ -15,7 +15,7 @@ var defs = {
 const { createContext, serialize } = require('../infrastructure/context');
 const { dispatch, isMutation } = require('../infrastructure/http/routeTable');
 
-const KEY = 'fx-health-demo-state-v1';
+const KEY = 'impilo-demo-state-v1';
 let memoryState = null; // fallback when storage is blocked
 
 function load() {
@@ -1173,8 +1173,8 @@ class SmsNotificationService {
     const to = this.lookup(resultSet.memberId);
     if (!to) return null;
     const firstName = String(resultSet.memberName || '').replace(/\s*\(demo\)/, '').split(' ')[0] || 'there';
-    const body = `FX Health: Hi ${firstName}, your blood test results from ${fmtDate(resultSet.collectionDate)} `
-      + `have been reviewed by ${resultSet.releasedBy}. Open the FX Health app to view them.`;
+    const body = `Impilo: Hi ${firstName}, your blood test results from ${fmtDate(resultSet.collectionDate)} `
+      + `have been reviewed by ${resultSet.releasedBy}. Open the Impilo app to view them.`;
     return this.deliver({ memberId: resultSet.memberId, resultSetId: resultSet.id, to, body });
   }
 
@@ -1514,5 +1514,5 @@ function load(id) {
   });
   return module.exports;
 }
-globalThis.FXBackend = load(0);
+globalThis.ImpiloBackend = load(0);
 })();

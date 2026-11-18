@@ -10,7 +10,7 @@ const byNewest = (a, b) => b.collectionDate.localeCompare(a.collectionDate);
 const link = (r) => `#/results/${encodeURIComponent(r.id)}`;
 
 async function home() {
-  title.textContent = 'FX Health';
+  title.textContent = 'Impilo';
   const [res, messages] = await Promise.all([api.memberResults(), api.memberMessages().catch(() => [])]);
   const results = (res || []).sort(byNewest);
   const latest = results[0];
@@ -46,7 +46,7 @@ async function checkSms() {
     const ids = msgs.map((m) => m.id);
     if (seenSms && ids.some((id) => !seenSms.includes(id))) {
       const m = msgs[0];
-      toast.innerHTML = `<strong><span aria-hidden="true">✉</span> New SMS · FX Health</strong>${esc(m.body)}`;
+      toast.innerHTML = `<strong><span aria-hidden="true">✉</span> New SMS · Impilo</strong>${esc(m.body)}`;
       toast.onclick = () => { toast.classList.remove('show'); location.hash = `#/results/${encodeURIComponent(m.resultSetId)}`; };
       toast.classList.add('show');
       if (navigator.vibrate) navigator.vibrate(200);

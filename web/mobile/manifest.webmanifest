@@ -1,7 +1,7 @@
 {
-  "name": "FX Health",
-  "short_name": "FX Health",
-  "description": "Your clinician-reviewed preventive health results.",
+  "name": "Impilo",
+  "short_name": "Impilo",
+  "description": "Your clinician-reviewed health results from Impilo.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
